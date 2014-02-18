@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using AppDevPro.Utility;
+using Learning.Win8.Common;
 using Learning.Win8.Model;
 using System;
 using System.Net.Http;
@@ -8,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
 
 namespace Learning.Win8.Service
@@ -35,10 +37,13 @@ namespace Learning.Win8.Service
 
         private ObservableCollection<ApiResult> Courses;
 
+        public IDialogService DialogService
+        {
+            get { return ServiceLocator.Current.GetInstance<IDialogService>(); }
+        }
+
         public async Task<ObservableCollection<ApiResult>> GetCoursesAsync()
         {
-
-
             _logger.Log(this, "objUri", objUri.ToString());
 
             try
@@ -78,6 +83,9 @@ namespace Learning.Win8.Service
                 await client.SendAsync(req).ContinueWith(respTask =>
                     {
                         _logger.Log(this, "response result", respTask.Result.ToString());
+                        //this.DialogService.ShowMessage("response result AoK", null);
+                        //_logger.Log(this, "after show message");
+
                     });
                 return true;
             }

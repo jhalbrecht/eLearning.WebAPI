@@ -7,6 +7,7 @@ using Learning.Win8.Common;
 using Learning.Win8.Model;
 using Learning.Win8.Service;
 using System.Collections.ObjectModel;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Learning.Win8.ViewModel
 {
@@ -72,6 +73,14 @@ namespace Learning.Win8.ViewModel
 
         private RelayCommand _RefreshButtonCommand;
 
+        public IDialogService DialogService
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<IDialogService>();
+            }
+        }
+
         /// <summary>
         /// Gets the RefreshButtonCommand.
         /// </summary>
@@ -120,7 +129,8 @@ namespace Learning.Win8.ViewModel
                                                     id = 2
                                                 }
                                              };
-                                             await _eLearningDataService.PostApiResultAsync(poster);
+                                             var answer = await _eLearningDataService.PostApiResultAsync(poster);
+                                             await DialogService.ShowMessage(answer.ToString(), "Success result from post is");
                                          }));
             }
         }
