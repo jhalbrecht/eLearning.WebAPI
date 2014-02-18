@@ -1,4 +1,5 @@
-﻿using AppDevPro.Utility;
+﻿using System.Net.Http.Headers;
+using AppDevPro.Utility;
 using Learning.Win8.Model;
 using System;
 using System.Net.Http;
@@ -14,13 +15,17 @@ namespace Learning.Win8.Service
     public class ELearningDataService : IELearningDataService
     {
         private Logger _logger;
-
+        private string webApiUrl;
+        private UriBuilder objUri;
         public ELearningDataService()
         {
             _logger = new Logger();
             _logger.Log(this, "ELearningDataService()\n");
             //Courses = new ObservableCollection<RootObject>();
             //LoadData();
+
+            objUri = new UriBuilder {Scheme = "http", Port = 8323, Host = "localhost", Path = "api/courses"};
+            webApiUrl = objUri.ToString();
         }
 
         private async void LoadData()
@@ -32,18 +37,14 @@ namespace Learning.Win8.Service
 
         public async Task<ObservableCollection<ApiResult>> GetCoursesAsync()
         {
-            UriBuilder objUri = new UriBuilder();
-            objUri.Scheme = "http";
-            objUri.Port = 8323;
-            objUri.Host = "localhost";
-            objUri.Path = "api/courses";
+
 
             _logger.Log(this, "objUri", objUri.ToString());
 
             try
             {
                 var client = new HttpClient();
-                using (var response = await client.GetAsync(objUri.ToString()))
+                using (var response = await client.GetAsync(webApiUrl))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -61,6 +62,29 @@ namespace Learning.Win8.Service
             {
                 _logger.Log(this, "GetEsfxesAsync threw exception: ", e.ToString());
                 return null;
+            }
+        }
+
+        public async Task<bool> PostApiResultAsync(ApiResult poster)
+        {
+            _logger.Log(this, "post em baby!");
+            try
+            {
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(webApiUrl);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var req = new HttpRequestMessage(HttpMethod.Post, webApiUrl);
+                req.Content = new StringContent(JsonConvert.SerializeObject(poster), Encoding.UTF8, "application/json");
+                await client.SendAsync(req).ContinueWith(respTask =>
+                    {
+                        _logger.Log(this, "response result", respTask.Result.ToString());
+                    });
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Log(this, "threw exception", e.ToString());
+                return false;
             }
         }
     }

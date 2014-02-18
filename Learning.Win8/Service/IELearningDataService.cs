@@ -11,5 +11,6 @@ namespace Learning.Win8.Service
     public interface IELearningDataService
     {
         Task<ObservableCollection<ApiResult>> GetCoursesAsync();
+        Task<bool> PostApiResultAsync(ApiResult poster);
     }
 }
