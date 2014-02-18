@@ -71,7 +71,8 @@ namespace Learning.Web.Controllers
         }
 
 
-        [Learning.Web.Filters.ForceHttps()]
+        // jha
+        // [Learning.Web.Filters.ForceHttps()]
         public HttpResponseMessage Post([FromBody] CourseModel courseModel)
         {
             try

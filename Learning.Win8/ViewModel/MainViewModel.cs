@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AppDevPro.Utility;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Learning.Win8.Common;
@@ -17,6 +18,8 @@ namespace Learning.Win8.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private Logger _logger;
+
         /// <summary>
         /// The <see cref="WelcomeTitle" /> property's name.
         /// </summary>
@@ -63,11 +66,32 @@ namespace Learning.Win8.ViewModel
         // jha
         public ObservableCollection<ApiResult> Courses { get; set; }
 
+        private RelayCommand _RefreshButtonCommand;
+
+        /// <summary>
+        /// Gets the RefreshButtonCommand.
+        /// </summary>
+        public RelayCommand RefreshButtonCommand
+        {
+            get
+            {
+                return _RefreshButtonCommand
+                    ?? (_RefreshButtonCommand = new RelayCommand(
+                                          async () =>
+                                          {
+                                              _logger.Log(this, "RelayCommand RefreshButtonCommand");
+                                              await Initialize();
+                                          }));
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel(IDataService dataService, INavigationService navigationService, IELearningDataService eLearningDataService)
         {
+            _logger = new Logger();
+
             _dataService = dataService;
             _navigationService = navigationService;
             _eLearningDataService = eLearningDataService;

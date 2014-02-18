@@ -16,8 +16,28 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Skins/MainSkin.xaml" />
             </ResourceDictionary.MergedDictionaries>
+        	<Style x:Key="DetailTextBlockStyle" TargetType="TextBlock">
+        		<Setter Property="Foreground" Value="{ThemeResource TextBoxForegroundThemeBrush}"/>
+        	</Style>
         </ResourceDictionary>
     </Page.Resources>
+    <common:PageBase.BottomAppBar>
+        <AppBar>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"/>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                	<AppBarButton
+                        Command="{Binding RefreshButtonCommand}"
+                            CommandParameter="{Binding}"
+                        HorizontalAlignment="Stretch" Label="Refresh" VerticalAlignment="Stretch" Icon="Refresh"/>
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </common:PageBase.BottomAppBar>
 
     <interactivity:Interaction.Behaviors>
         <common:OrientationStateBehavior PortraitFlippedStateName="Portrait" />
@@ -241,45 +261,76 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="1">
-                <StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
+            <StackPanel Grid.Column="1"
+                        Background="Bisque">
+                <StackPanel>
                     <ScrollViewer x:Name="DetailView" Margin="0,0,0,0" Grid.RowSpan="2" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Width="683" >
                         <StackPanel x:Name="ContentPanelDetail" HorizontalAlignment="Left" Orientation="Vertical" Margin="10,0,0,0" DataContext="{Binding SelectedItem, ElementName=GridViewCourses}">
                             <StackPanel x:Name="HeaderStackPanel" Orientation="Vertical" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="10,0,0,0">
 
-                                <TextBlock FontSize="18" Text="{Binding name}" />
-                                <TextBlock FontSize="14" Text="{Binding duration}" />
-                                <TextBlock FontSize="14" Text="{Binding url}" />
-                                <TextBlock FontSize="14" Text="{Binding description}" />
+                                <TextBlock FontSize="18" Text="{Binding name}" Style="{StaticResource DetailTextBlockStyle}" />
+                                <TextBlock Text="{Binding duration}" Style="{StaticResource DetailTextBlockStyle}" />
+                                <TextBlock Text="{Binding url}" Style="{StaticResource DetailTextBlockStyle}" />
+                                <TextBlock Text="{Binding description}" Style="{StaticResource DetailTextBlockStyle}" />
 
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </StackPanel>
 
-                <TextBlock Text="{Binding description}"/>
+                <!--<TextBlock Text="{Binding description}"/>-->
             </StackPanel>
 
-            <GridView  Grid.Column="0" x:Name="GridViewCourses"
-        		ItemsSource="{Binding Courses}">
+            <StackPanel x:Name="Post" Grid.Column="1" Grid.Row="1"
+                        Background="Aquamarine">
+                <TextBlock Text="Post Courses" Margin="5,5" Style="{StaticResource HeaderTextBlockStyle}"/>
+                
+                <StackPanel Orientation="Horizontal" Margin="5,5">
+                    <TextBlock Text="name" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <Rectangle Width="20"/>
+                    <TextBox x:Name="TbName"/>
+                    <TextBlock Text="duration" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <Rectangle Width="20"/>
+                    <TextBox x:Name="TbDuration" />
+                    <TextBlock Text="description" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <Rectangle Width="20"/>
+                    
+                    <TextBox />
 
-                <GridView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Width="500"
-        					Height="50"
-        					Background="Cyan">
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  >
+                    <TextBlock Text="subject: id: 6  , tutor: id:2  " Style="{StaticResource BaseTextBlockStyle}"/>
+                    <Rectangle Width="10"/> 
+                    
+                </StackPanel>
+                <Button Content="Post" />
+                </StackPanel>
 
-                            <TextBlock  
-        						FontSize="22"
-        						Foreground="Black"
-        						Text="{Binding name}"
-        						VerticalAlignment="Center"
-        						HorizontalAlignment="Left" />
+                <GridView x:Name="GridViewCourses" 
+                      Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                      ItemsSource="{Binding Courses}">
 
-                        </StackPanel>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Width="500"
+        					    Height="50"
+        					    Background="Cyan">
+
+                                <TextBlock  
+        						    FontSize="22"
+        						    Foreground="Black"
+        						    Text="{Binding name}"
+        						    VerticalAlignment="Center"
+        						    HorizontalAlignment="Left" />
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
             </GridView>
         </Grid>
 
